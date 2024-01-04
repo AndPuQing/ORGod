@@ -1,10 +1,14 @@
 {
     "deepscan.enable": true,
     "cSpell.words": [
+        "actionables",
         "ianvs",
         "lucide",
+        "Orga",
         "tailwindcss",
+        "todos",
         "typecheck",
-        "udecode"
+        "udecode",
+        "whitespaces"
     ]
 }

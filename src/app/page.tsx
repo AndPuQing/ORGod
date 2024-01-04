@@ -8,7 +8,7 @@ export default function IndexPage() {
           Org Mode PlayGround
         </h1>
       </div>
-      <div className="flex w-[600px] flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <PlateEditor />
       </div>
     </section>
