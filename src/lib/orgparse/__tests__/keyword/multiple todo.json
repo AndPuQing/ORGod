@@ -1,0 +1,172 @@
+{
+  "type": "document",
+  "properties": {},
+  "children": [
+    {
+      "type": "keyword",
+      "key": "TODO",
+      "value": "TODO NEXT | DONE",
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 25,
+          "offset": 24
+        }
+      }
+    },
+    {
+      "type": "keyword",
+      "key": "TODO",
+      "value": "DRAFT PUBLISHED",
+      "position": {
+        "start": {
+          "line": 2,
+          "column": 1,
+          "offset": 25
+        },
+        "end": {
+          "line": 2,
+          "column": 24,
+          "offset": 48
+        }
+      }
+    },
+    {
+      "type": "keyword",
+      "key": "TODO",
+      "value": "BUG(b) FEATURE(f) | DONE(d)",
+      "position": {
+        "start": {
+          "line": 3,
+          "column": 1,
+          "offset": 49
+        },
+        "end": {
+          "line": 3,
+          "column": 36,
+          "offset": 84
+        }
+      }
+    },
+    {
+      "type": "emptyLine",
+      "position": {
+        "start": {
+          "line": 4,
+          "column": 1,
+          "offset": 85
+        },
+        "end": {
+          "line": 4,
+          "column": 1,
+          "offset": 85
+        }
+      }
+    },
+    {
+      "type": "section",
+      "level": 1,
+      "properties": {},
+      "children": [
+        {
+          "type": "headline",
+          "actionable": true,
+          "children": [
+            {
+              "type": "stars",
+              "level": 1,
+              "position": {
+                "start": {
+                  "line": 5,
+                  "column": 1,
+                  "offset": 86
+                },
+                "end": {
+                  "line": 5,
+                  "column": 3,
+                  "offset": 88
+                }
+              }
+            },
+            {
+              "type": "todo",
+              "keyword": "DRAFT",
+              "actionable": true,
+              "position": {
+                "start": {
+                  "line": 5,
+                  "column": 3,
+                  "offset": 88
+                },
+                "end": {
+                  "line": 5,
+                  "column": 9,
+                  "offset": 94
+                }
+              }
+            },
+            {
+              "type": "text",
+              "value": "Some Headline",
+              "position": {
+                "start": {
+                  "line": 5,
+                  "column": 9,
+                  "offset": 94
+                },
+                "end": {
+                  "line": 5,
+                  "column": 22,
+                  "offset": 107
+                }
+              }
+            }
+          ],
+          "level": 1,
+          "position": {
+            "start": {
+              "line": 5,
+              "column": 1,
+              "offset": 86
+            },
+            "end": {
+              "line": 5,
+              "column": 23,
+              "offset": 108
+            }
+          },
+          "keyword": "DRAFT"
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 5,
+          "column": 1,
+          "offset": 86
+        },
+        "end": {
+          "line": 5,
+          "column": 23,
+          "offset": 108
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 5,
+      "column": 23,
+      "offset": 108
+    }
+  }
+}
