@@ -1,7 +1,7 @@
 import { Reader } from 'text-kit';
 
 import { Token } from '../../types.js';
-import uri from '../../uri.js';
+import parseLink from '../../uri.js';
 import { Tokenizer } from '../index.js';
 import { tokenize } from './index.js';
 import tokenizeText from './text.js';
@@ -31,7 +31,9 @@ const tokenizeLink: Tokenizer = (reader: Reader) => {
   const pathClosing = findClosing(pathOpening.position.start);
   if (!pathClosing) return;
 
-  const linkInfo = uri(reader.substring(pathOpening.position.end, pathClosing));
+  const linkInfo = parseLink(
+    reader.substring(pathOpening.position.end, pathClosing)
+  );
   if (!linkInfo) return;
 
   jump(pathClosing);

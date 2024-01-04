@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import createTodoKeywordSet from './todo-keyword-set';
 
-const debug = (text: string) => {
+const _debug = (text: string) => {
   const tks = createTodoKeywordSet(text);
   console.log(`${text}:`, tks);
 };

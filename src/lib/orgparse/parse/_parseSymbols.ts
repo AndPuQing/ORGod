@@ -1,7 +1,7 @@
 import { Primitive } from '../types.js';
 import primitive from './_primitive.js';
 
-export default (text: string): { [key: string]: Primitive } => {
+const parseSymbols = (text: string): { [key: string]: Primitive } => {
   let t = text;
   const result = {};
   while (t.length > 0) {
@@ -21,3 +21,5 @@ export default (text: string): { [key: string]: Primitive } => {
 
   return result;
 };
+
+export default parseSymbols;

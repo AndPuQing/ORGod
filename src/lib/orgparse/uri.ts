@@ -7,10 +7,10 @@ interface LinkInfo {
 }
 
 const isFilePath = (str: string): boolean => {
-  return str && /^\.{0,2}\//.test(str);
+  return typeof str === 'string' && /^\.{0,2}\//.test(str);
 };
 
-export default (link: string): LinkInfo | undefined => {
+const parseLink = (link: string): LinkInfo | undefined => {
   const m = URL_PATTERN.exec(link);
   if (!m) return undefined;
   const protocol = (
@@ -31,3 +31,4 @@ export default (link: string): LinkInfo | undefined => {
   }
   return { protocol, value, search };
 };
+export default parseLink;
