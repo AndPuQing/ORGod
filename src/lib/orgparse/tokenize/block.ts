@@ -1,17 +1,18 @@
-import { Reader } from 'text-kit'
-import { Token } from '../types'
+import { Reader } from 'text-kit';
+
+import { Token } from '../types';
 
 export default (reader: Reader): Token[] | void => {
-  const { match, eat, endOfLine, jump } = reader
-  const ws = eat('whitespaces')
+  const { match, eat, endOfLine, jump } = reader;
+  const ws = eat('whitespaces');
 
-  const b = match(/#\+begin_([^\s\n]+)\s*(.*)$/imy, { end: endOfLine() })
+  const b = match(/#\+begin_([^\s\n]+)\s*(.*)$/imy, { end: endOfLine() });
   if (b) {
-    eat('line')
+    eat('line');
     const params = b.result[2]
       .split(' ')
       .map((p) => p.trim())
-      .filter(String)
+      .filter(String);
     return [
       {
         type: 'block.begin',
@@ -19,20 +20,20 @@ export default (reader: Reader): Token[] | void => {
         params,
         position: { ...b.position },
       },
-    ]
+    ];
   }
 
-  const e = match(/#\+end_([^\s\n]+)\s*$/imy, { end: endOfLine() })
+  const e = match(/#\+end_([^\s\n]+)\s*$/imy, { end: endOfLine() });
   if (e) {
-    reader.eat('line')
+    reader.eat('line');
     return [
       {
         type: 'block.end',
         name: e.result[1],
         position: { ...e.position },
       },
-    ]
+    ];
   }
 
-  ws && jump(ws.position.start)
-}
+  ws && jump(ws.position.start);
+};

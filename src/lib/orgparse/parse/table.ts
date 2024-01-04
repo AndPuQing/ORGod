@@ -1,12 +1,12 @@
-import { Action } from './index.js'
-import { isPhrasingContent } from '../utils.js'
-import phrasingContent from './phrasing.js'
+import { isPhrasingContent } from '../utils.js';
+import { Action } from './index.js';
+import phrasingContent from './phrasing.js';
 
 const tableCell: Action = (_, { enter }) => {
   enter({
     type: 'table.cell',
     children: [],
-  })
+  });
 
   return {
     name: 'table cell',
@@ -14,8 +14,8 @@ const tableCell: Action = (_, { enter }) => {
       {
         test: ['newline', 'table.columnSeparator'],
         action: (_, { exit }) => {
-          exit('table.cell')
-          return 'break'
+          exit('table.cell');
+          return 'break';
         },
       },
       {
@@ -25,22 +25,22 @@ const tableCell: Action = (_, { enter }) => {
       {
         test: /.*/,
         action: (_, { exit }) => {
-          exit('table.cell')
-          return 'break'
+          exit('table.cell');
+          return 'break';
         },
       },
     ],
-  }
-}
+  };
+};
 
 const tableRow: Action = (_, { enter, lexer }) => {
   enter({
     type: 'table.row',
     children: [],
-  })
+  });
 
   // consume()
-  lexer.eat()
+  lexer.eat();
 
   return {
     name: 'table row',
@@ -48,23 +48,23 @@ const tableRow: Action = (_, { enter, lexer }) => {
       {
         test: 'newline',
         action: (_, { exit, discard }) => {
-          discard()
-          exit('table.row')
-          return 'break'
+          discard();
+          exit('table.row');
+          return 'break';
         },
       },
       { test: 'table.columnSeparator', action: (_, { consume }) => consume() },
       { test: isPhrasingContent, action: tableCell },
     ],
-  }
-}
+  };
+};
 
 const table: Action = (_, context) => {
   context.enter({
     type: 'table',
     children: [],
     attributes: {},
-  })
+  });
 
   return {
     name: 'table',
@@ -75,13 +75,13 @@ const table: Action = (_, context) => {
       {
         test: /.*/,
         action: (_, context) => {
-          context.exitTo('table')
-          context.exit('table')
-          return 'break'
+          context.exitTo('table');
+          context.exit('table');
+          return 'break';
         },
       },
     ],
-  }
-}
+  };
+};
 
-export default table
+export default table;

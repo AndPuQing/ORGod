@@ -1,33 +1,34 @@
-import { Action } from './index.js'
-import type { HTML, Keyword, Primitive, JSX } from '../types.js'
-import parseSymbols from './_parseSymbols.js'
-import _primitive from './_primitive.js'
+import parseSymbols from './_parseSymbols.js';
+import _primitive from './_primitive.js';
+import { Action } from './index.js';
 
-const AFFILIATED_KEYWORDS = ['caption', 'header', 'name', 'plot', 'results']
+import type { HTML, JSX, Keyword, Primitive } from '../types.js';
+
+const AFFILIATED_KEYWORDS = ['caption', 'header', 'name', 'plot', 'results'];
 
 const keyword: Action = (token: Keyword, context) => {
-  const { push, lexer, addProp } = context
-  const key = token.key.toLowerCase()
-  const { value } = token
+  const { push, lexer, addProp } = context;
+  const key = token.key.toLowerCase();
+  const { value } = token;
 
   if (key === 'html') {
-    push({ type: 'html', value, position: token.position } as HTML)
+    push({ type: 'html', value, position: token.position } as HTML);
   } else if (key === 'jsx') {
-    push({ type: 'jsx', value, position: token.position } as JSX)
+    push({ type: 'jsx', value, position: token.position } as JSX);
   } else {
     if (AFFILIATED_KEYWORDS.includes(key)) {
-      context.attributes[key] = _primitive(value)
+      context.attributes[key] = _primitive(value);
     } else if (key.startsWith('attr_')) {
       context.attributes[key] = {
         ...(context.attributes[key] as { [key: string]: Primitive }),
         ...parseSymbols(value),
-      }
+      };
     } else if (key === 'todo') {
-      lexer.addInBufferTodoKeywords(value)
+      lexer.addInBufferTodoKeywords(value);
     } else {
-      addProp(key, value)
+      addProp(key, value);
     }
-    push(token)
+    push(token);
   }
 
   // if (AFFILIATED_KEYWORDS.includes(key)) {
@@ -47,10 +48,10 @@ const keyword: Action = (token: Keyword, context) => {
   //   addProp(key, value)
   // }
 
-  lexer.eat()
-}
+  lexer.eat();
+};
 
-export default keyword
+export default keyword;
 
 // export default (context: Context) => {
 //   const { push, lexer } = context

@@ -1,63 +1,64 @@
-import { Lexer } from '../tokenize'
-import { Node } from 'unist'
-import { Document, Parent, Token } from '../types.js'
-import { isPhrasingContent } from '../utils.js'
-import block from './block.js'
-import latex from './latex.js'
-import { Context, createContext } from './context.js'
-import keyword from './keyword.js'
-import list from './list.js'
-import paragraph from './paragraph.js'
-import section from './section.js'
-import table from './table.js'
-import footnote from './footnote.js'
-import { ParserOptions } from '../options'
+import { Node } from 'unist';
 
-export type Parse = (lexer: Lexer) => Parent | undefined
+import { ParserOptions } from '../options';
+import { Lexer } from '../tokenize';
+import { Document, Parent, Token } from '../types.js';
+import { isPhrasingContent } from '../utils.js';
+import block from './block.js';
+import { Context, createContext } from './context.js';
+import footnote from './footnote.js';
+import keyword from './keyword.js';
+import latex from './latex.js';
+import list from './list.js';
+import paragraph from './paragraph.js';
+import section from './section.js';
+import table from './table.js';
+
+export type Parse = (lexer: Lexer) => Parent | undefined;
 
 /*
  * break: pop handler stack, go to next handler
  * next: go to next rule in the current handler
  * finish | void: finish current handler, skip the upcoming rules
  */
-type FlowControl = 'break' | 'next' | 'finish'
+type FlowControl = 'break' | 'next' | 'finish';
 
 export type Action = (
   token: Token,
   context: Context
-) => FlowControl | Handler | void
+) => FlowControl | Handler | void;
 
-export type Predicate = string | 'EOF' | RegExp | ((token: Node) => boolean)
+export type Predicate = string | 'EOF' | RegExp | ((token: Node) => boolean);
 
 export function test(node: Node, predicate: Predicate) {
-  return toFunc(predicate)(node)
+  return toFunc(predicate)(node);
 }
 
 export function not(test: Predicate): Predicate {
-  return (token) => !toFunc(test)(token)
+  return (token) => !toFunc(test)(token);
 }
 
 export function toFunc(test: Predicate): (token: Node) => boolean {
   if (typeof test === 'function') {
-    return (token) => token && test(token)
+    return (token) => token && test(token);
   }
   if (test === 'EOF') {
     return (token) => {
-      return token === undefined
-    }
+      return token === undefined;
+    };
   }
   if (typeof test === 'string') {
-    return (token) => token && test === token.type
+    return (token) => token && test === token.type;
   }
-  return (token) => token && test.test(token.type)
+  return (token) => token && test.test(token.type);
 }
 
-type Rule = { test: Predicate | Predicate[]; action: Action | Handler }
+type Rule = { test: Predicate | Predicate[]; action: Action | Handler };
 
 export interface Handler {
-  name: string
-  rules: Rule[]
-  eof?: (context: Context) => void
+  name: string;
+  rules: Rule[];
+  eof?: (context: Context) => void;
 }
 
 const main: Handler = {
@@ -66,10 +67,10 @@ const main: Handler = {
     {
       test: 'emptyLine',
       action: function (_, context) {
-        const { consume, exit } = context
-        context.attributes = {}
-        exit('footnote', false)
-        consume()
+        const { consume, exit } = context;
+        context.attributes = {};
+        exit('footnote', false);
+        consume();
       },
     },
     { test: 'newline', action: (_, { discard }) => discard() },
@@ -82,8 +83,8 @@ const main: Handler = {
     {
       test: 'hr',
       action: (token, { lexer, push }) => {
-        lexer.eat()
-        push(token)
+        lexer.eat();
+        push(token);
       },
     },
     { test: isPhrasingContent, action: paragraph },
@@ -92,114 +93,114 @@ const main: Handler = {
     {
       test: /.*/,
       action: (_, { lexer }) => {
-        lexer.eat()
+        lexer.eat();
       },
     },
     { test: 'EOF', action: () => 'break' },
   ],
-}
+};
 
 export interface Parser {
-  advance: () => Document | number
-  parse: () => Document
-  finish: () => Document
+  advance: () => Document | number;
+  parse: () => Document;
+  finish: () => Document;
 }
 
 export function parser(lexer: Lexer, options: ParserOptions): Parser {
-  const context = createContext(lexer, options)
-  const end = lexer.toOffset(options.range?.end || Infinity)
+  const context = createContext(lexer, options);
+  const end = lexer.toOffset(options.range?.end || Infinity);
 
-  const handlerStack: Handler[] = [main]
+  const handlerStack: Handler[] = [main];
 
   function handler() {
     return handlerStack.length > 0
       ? handlerStack[handlerStack.length - 1]
-      : undefined
+      : undefined;
   }
 
-  let lexerLocation = lexer.save()
-  let maxStaleIterations = 10
+  let lexerLocation = lexer.save();
+  let maxStaleIterations = 10;
 
   function advance() {
     if (!handler() && lexer.now >= end) {
-      return finish()
+      return finish();
     }
 
     // prevent infinit loop
     if (maxStaleIterations === 0) {
-      throw new Error(`it's stuck. \n${context.state}`)
+      throw new Error(`it's stuck. \n${context.state}`);
     }
 
-    let nothingMatches = true
+    let nothingMatches = true;
 
     for (const { test: _test, action } of handler().rules) {
-      const token = lexer.peek()
-      const predicates = Array.isArray(_test) ? _test : [_test]
-      if (!predicates.some((p) => test(token, p))) continue
-      nothingMatches = false
+      const token = lexer.peek();
+      const predicates = Array.isArray(_test) ? _test : [_test];
+      if (!predicates.some((p) => test(token, p))) continue;
+      nothingMatches = false;
 
       if (typeof action !== 'function') {
-        handlerStack.push(action)
-        return advance()
+        handlerStack.push(action);
+        return advance();
       }
 
-      const control = action(token, context)
+      const control = action(token, context);
 
       if (typeof control === 'object') {
-        handlerStack.push(control)
-        return advance()
+        handlerStack.push(control);
+        return advance();
       }
 
       if (control === 'break') {
-        handlerStack.pop()
+        handlerStack.pop();
         // if (handlerStack.length === 0) {
         //   throw new Error('can not pop the root handler')
         // }
 
         // return the offset if the block is finished
         if (lexer.peek() && context.parent.type === 'document') {
-          return lexer.peek().position.start.offset
+          return lexer.peek().position.start.offset;
         }
-        return advance()
+        return advance();
       }
       if (control === 'next') {
-        continue
+        continue;
       }
-      break
+      break;
     }
 
     if (nothingMatches) {
-      handlerStack.pop()
-      return advance()
+      handlerStack.pop();
+      return advance();
     }
 
     if (lexer.save() === lexerLocation) {
-      maxStaleIterations -= 1
+      maxStaleIterations -= 1;
     } else {
-      lexerLocation = lexer.save()
-      maxStaleIterations = 10
+      lexerLocation = lexer.save();
+      maxStaleIterations = 10;
     }
 
-    return advance()
+    return advance();
   }
 
   function finish() {
-    context.exitTo('document')
-    context.exit('document')
+    context.exitTo('document');
+    context.exit('document');
     // algin the end position
-    context.tree.position.end = lexer.toPoint(lexer.now)
-    return context.tree
+    context.tree.position.end = lexer.toPoint(lexer.now);
+    return context.tree;
   }
 
   return {
     advance,
     parse() {
       for (;;) {
-        const tree = advance()
-        if (typeof tree === 'number') continue
-        return tree
+        const tree = advance();
+        if (typeof tree === 'number') continue;
+        return tree;
       }
     },
     finish,
-  }
+  };
 }

@@ -15,9 +15,9 @@ const COMMON_IMAGE_EXTENSIONS = [
   'cur',
   'tif',
   'tiff',
-]
+];
 
 export const isImage = (path: string) => {
-  const ext = path.toLowerCase().split('.').pop()
-  return COMMON_IMAGE_EXTENSIONS.includes(ext)
-}
+  const ext = path.toLowerCase().split('.').pop();
+  return COMMON_IMAGE_EXTENSIONS.includes(ext);
+};

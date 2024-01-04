@@ -1,6 +1,7 @@
-import { describe, it } from 'node:test'
-import assert from 'node:assert'
-import tokenize from './__tests__/tok'
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
+import tokenize from './__tests__/tok';
 
 describe('Inline Tokenization', () => {
   it('recon single emphasis', () => {
@@ -32,8 +33,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: '.',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon emphasises at different locations', () => {
     assert.deepEqual(tokenize('one *two* three'), [
@@ -53,7 +54,7 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: ' three',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize('*one* two three'), [
       {
         _text: '*one*',
@@ -66,7 +67,7 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: ' two three',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize('one two *three*'), [
       {
         _text: 'one two ',
@@ -79,8 +80,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: 'three',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon link', () => {
     assert.deepEqual(tokenize(`hello [[./image/logo.png]]`), [
@@ -106,7 +107,7 @@ describe('Inline Tokenization', () => {
         element: 'link',
         type: 'closing',
       },
-    ])
+    ]);
 
     assert.deepEqual(tokenize(`hello [[Internal Link][link]]`), [
       {
@@ -136,7 +137,7 @@ describe('Inline Tokenization', () => {
         element: 'link',
         type: 'closing',
       },
-    ])
+    ]);
 
     assert.deepEqual(tokenize(`hello [[../image/logo.png][logo]]`), [
       {
@@ -166,7 +167,7 @@ describe('Inline Tokenization', () => {
         element: 'link',
         type: 'closing',
       },
-    ])
+    ]);
 
     assert.deepEqual(tokenize(`that is a [[../image/logo.png][/nice/ logo]]`), [
       {
@@ -202,8 +203,8 @@ describe('Inline Tokenization', () => {
         element: 'link',
         type: 'closing',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon footnote reference', () => {
     assert.deepEqual(tokenize(`hello[fn:1] world.`), [
@@ -232,8 +233,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: ' world.',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon anonymous footnote reference', () => {
     assert.deepEqual(tokenize('hello[fn::Anonymous] world.'), [
@@ -262,8 +263,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: ' world.',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon anonymous footnote reference with inner footnote reference', () => {
     assert.deepEqual(tokenize('hello[fn::[fn::Anonymous]] world.'), [
@@ -302,8 +303,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: ' world.',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon anonymous footnote reference with empty body', () => {
     assert.deepEqual(tokenize('hello[fn::] world.'), [
@@ -327,8 +328,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: ' world.',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon named inline footnote', () => {
     assert.deepEqual(tokenize('hello[fn:named:Inline named footnote] world.'), [
@@ -362,8 +363,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: ' world.',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon invalid inline markups', () => {
     assert.deepEqual(tokenize(`* word*`), [
@@ -377,15 +378,15 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: 'word*',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize(`*word *`), [
       {
         _text: '*word *',
         type: 'text',
         value: '*word *',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon emphasises with 2 chars', () => {
     assert.deepEqual(tokenize(`*12*`), [
@@ -395,7 +396,7 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: '12',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize(`*1*`), [
       {
         _text: '*1*',
@@ -403,8 +404,8 @@ describe('Inline Tokenization', () => {
         type: 'text',
         value: '1',
       },
-    ])
-  })
+    ]);
+  });
 
   it('recon mixed emphasis', () => {
     assert.deepEqual(
@@ -495,13 +496,13 @@ describe('Inline Tokenization', () => {
           value: ' square holes...',
         },
       ]
-    )
-  })
+    );
+  });
 
   it('can handle something more complicated', () => {
     const content = `
 Special characters =~= and =!=. Also =~/.this/path= and ~that~ thing.
-`
+`;
 
     assert.deepEqual(tokenize(content), [
       {
@@ -565,6 +566,6 @@ Special characters =~= and =!=. Also =~/.this/path= and ~that~ thing.
         _text: '\n',
         type: 'newline',
       },
-    ])
-  })
-})
+    ]);
+  });
+});

@@ -1,59 +1,61 @@
-import { read, Reader } from 'text-kit'
-import { Point, Position } from 'unist'
-import type { LexerOptions } from '../options.js'
-import todoKeywordSet, { TodoKeywordSet } from '../todo-keyword-set.js'
-import { Token } from '../types.js'
-import block from './block.js'
-import latex from './latex.js'
-import comment from './comment.js'
-import drawer from './drawer.js'
-import footnote from './footnote.js'
-import headline from './headline.js'
-import hr from './hr.js'
-import { tokenize as inlineTok } from './inline/index.js'
-import keyword from './keyword.js'
-import listItem from './list.js'
-import planning from './planning.js'
-import table from './table.js'
-import emptyLines from './empty.js'
+import { read, Reader } from 'text-kit';
+import { Point, Position } from 'unist';
 
-const PLANNING_KEYWORDS = ['DEADLINE', 'SCHEDULED', 'CLOSED']
+import todoKeywordSet, { TodoKeywordSet } from '../todo-keyword-set.js';
+import { Token } from '../types.js';
+import block from './block.js';
+import comment from './comment.js';
+import drawer from './drawer.js';
+import emptyLines from './empty.js';
+import footnote from './footnote.js';
+import headline from './headline.js';
+import hr from './hr.js';
+import { tokenize as inlineTok } from './inline/index.js';
+import keyword from './keyword.js';
+import latex from './latex.js';
+import listItem from './list.js';
+import planning from './planning.js';
+import table from './table.js';
+
+import type { LexerOptions } from '../options.js';
+
+const PLANNING_KEYWORDS = ['DEADLINE', 'SCHEDULED', 'CLOSED'];
 
 export interface Lexer {
-  eat: (type?: string) => Token | undefined
-  eatAll: (type: string) => number
-  peek: (offset?: number) => Token | undefined
-  match: (cond: RegExp | string, offset?: number) => boolean
-  all: () => Token[]
-  save: () => number
-  restore: (point: number) => void
-  addInBufferTodoKeywords: (text: string) => void
-  substring: (position: Position) => string
+  eat: (type?: string) => Token | undefined;
+  eatAll: (type: string) => number;
+  peek: (offset?: number) => Token | undefined;
+  match: (cond: RegExp | string, offset?: number) => boolean;
+  all: () => Token[];
+  save: () => number;
+  restore: (point: number) => void;
+  addInBufferTodoKeywords: (text: string) => void;
+  substring: (position: Position) => string;
   /** Modify the next token (or the token at the given offset). */
-  modify(f: (t: Token) => Token, offset?: number): void
-  readonly now: number
-  toOffset: (point: Point | number) => number
-  toPoint: (point: number) => Point
+  modify(f: (t: Token) => Token, offset?: number): void;
+  readonly now: number;
+  toOffset: (point: Point | number) => number;
+  toPoint: (point: number) => Point;
 }
 
-export type Tokenizer = (reader: Reader) => Token[] | Token | void
+export type Tokenizer = (reader: Reader) => Token[] | Token | void;
 
 export const tokenize = (text: string, options: LexerOptions): Lexer => {
-  const { timezone, todos, range } = options
-  const reader = read(text, range)
-  const { getChar } = reader
-  const globalTodoKeywordSets = todos.map(todoKeywordSet)
-  const inBufferTodoKeywordSets: TodoKeywordSet[] = []
+  const { timezone, todos, range } = options;
+  const reader = read(text, range);
+  const { getChar } = reader;
+  const globalTodoKeywordSets = todos.map(todoKeywordSet);
+  const inBufferTodoKeywordSets: TodoKeywordSet[] = [];
 
   function todoKeywordSets() {
     return inBufferTodoKeywordSets.length === 0
       ? globalTodoKeywordSets
-      : inBufferTodoKeywordSets
+      : inBufferTodoKeywordSets;
   }
 
-  let tokens: Token[] = []
+  let tokens: Token[] = [];
 
-  let cursor = 0
+  let cursor = 0;
 
   const tokenizers: Tokenizer[] = [
     ({ getChar, eat }) =>
@@ -72,102 +74,102 @@ export const tokenize = (text: string, options: LexerOptions): Lexer => {
     table,
     hr,
     footnote,
-  ]
+  ];
 
   function tok(): Token[] {
-    const all = emptyLines(reader)
+    const all = emptyLines(reader);
 
     // eat('whitespaces')
 
-    if (!getChar()) return all
+    if (!getChar()) return all;
 
     for (const t of tokenizers) {
-      const result = t(reader)
-      if (!result) continue
-      const tokens = Array.isArray(result) ? result : [result]
+      const result = t(reader);
+      if (!result) continue;
+      const tokens = Array.isArray(result) ? result : [result];
       if (tokens.length > 0) {
-        return [...all, ...tokens]
+        return [...all, ...tokens];
       }
     }
 
     // last resort
-    const currentLine = reader.read({ end: reader.endOfLine() })
-    const inlineTokens = inlineTok(currentLine)
-    reader.jump(currentLine.now())
-    return [...all, ...inlineTokens]
+    const currentLine = reader.read({ end: reader.endOfLine() });
+    const inlineTokens = inlineTok(currentLine);
+    reader.jump(currentLine.now());
+    return [...all, ...inlineTokens];
   }
 
   const peek = (offset = 0): Token | undefined => {
-    const pos = cursor + offset
+    const pos = cursor + offset;
     if (pos >= tokens.length) {
-      tokens = tokens.concat(tok())
+      tokens = tokens.concat(tok());
     }
-    return tokens[pos]
-  }
+    return tokens[pos];
+  };
 
   const modify = (f: (t: Token) => Token, offset = 0): void => {
-    const pos = cursor + offset
-    const token = peek(offset)
+    const pos = cursor + offset;
+    const token = peek(offset);
     if (token !== undefined) {
-      tokens[pos] = f(token)
+      tokens[pos] = f(token);
     }
-  }
+  };
 
   const _eat = (type: string | undefined = undefined): Token | undefined => {
-    const t = peek()
-    if (!t) return undefined
+    const t = peek();
+    if (!t) return undefined;
     if (!type || type === t.type) {
-      cursor += 1
-      return t
+      cursor += 1;
+      return t;
     }
-    return undefined
-  }
+    return undefined;
+  };
 
   return {
     peek,
     eat: _eat,
     eatAll(type: string): number {
-      let count = 0
+      let count = 0;
       while (_eat(type)) {
-        count += 1
+        count += 1;
       }
-      return count
+      return count;
     },
     match(cond, offset = 0) {
-      const token = peek()
-      if (!token) return false
+      const token = peek();
+      if (!token) return false;
       if (typeof cond === 'string') {
-        return token.type === cond
+        return token.type === cond;
       }
-      return cond.test(token.type)
+      return cond.test(token.type);
     },
 
     all(max: number | undefined = undefined): Token[] {
-      let _all: Token[] = []
-      let tokens = tok()
+      let _all: Token[] = [];
+      let tokens = tok();
       while (tokens.length > 0) {
-        _all = _all.concat(tokens)
-        tokens = tok()
+        _all = _all.concat(tokens);
+        tokens = tok();
       }
-      return _all
+      return _all;
     },
 
     save: () => cursor,
 
     restore(point) {
-      cursor = point
+      cursor = point;
     },
 
     addInBufferTodoKeywords(text) {
-      inBufferTodoKeywordSets.push(todoKeywordSet(text))
+      inBufferTodoKeywordSets.push(todoKeywordSet(text));
     },
     substring: (pos) => reader.substring(pos.start, pos.end),
     modify,
     get now() {
-      const token = peek()
-      return reader.toIndex(token?.position.start ?? Infinity)
+      const token = peek();
+      return reader.toIndex(token?.position.start ?? Infinity);
     },
     toOffset: (point) => reader.toIndex(point),
     toPoint: (offset) => reader.toPoint(offset),
-  }
-}
+  };
+};

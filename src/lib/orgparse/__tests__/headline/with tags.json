@@ -101,10 +101,7 @@
                 },
                 {
                   "type": "tags",
-                  "tags": [
-                    "tag1",
-                    "tag2"
-                  ],
+                  "tags": ["tag1", "tag2"],
                   "position": {
                     "start": {
                       "line": 2,
@@ -132,10 +129,7 @@
                   "offset": 37
                 }
               },
-              "tags": [
-                "tag1",
-                "tag2"
-              ]
+              "tags": ["tag1", "tag2"]
             },
             {
               "type": "section",
@@ -180,10 +174,7 @@
                     },
                     {
                       "type": "tags",
-                      "tags": [
-                        "#tag",
-                        "@tag"
-                      ],
+                      "tags": ["#tag", "@tag"],
                       "position": {
                         "start": {
                           "line": 3,
@@ -211,10 +202,7 @@
                       "offset": 63
                     }
                   },
-                  "tags": [
-                    "#tag",
-                    "@tag"
-                  ]
+                  "tags": ["#tag", "@tag"]
                 }
               ],
               "position": {

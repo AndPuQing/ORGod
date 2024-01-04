@@ -1,6 +1,6 @@
-import { Handler } from './index.js'
-import { PlanningKeyword } from '../types.js'
-import drawer from './drawer.js'
+import { PlanningKeyword } from '../types.js';
+import drawer from './drawer.js';
+import { Handler } from './index.js';
 
 const planning: Handler = {
   name: 'planning',
@@ -8,41 +8,41 @@ const planning: Handler = {
     {
       test: 'planning.keyword',
       action: (keyword: PlanningKeyword, context) => {
-        const { lexer, enter, push, exit } = context
-        const { eat, eatAll, peek } = lexer
-        const timestamp = peek(1)
+        const { lexer, enter, push, exit } = context;
+        const { eat, eatAll, peek } = lexer;
+        const timestamp = peek(1);
         if (!timestamp || timestamp.type !== 'planning.timestamp') {
-          return 'break'
+          return 'break';
         }
         enter({
           type: 'planning',
           keyword: keyword.value,
           timestamp: timestamp.value,
           children: [],
-        })
+        });
 
-        push(eat()) // keyword
-        push(eat()) // timestamp
-        exit('planning')
+        push(eat()); // keyword
+        push(eat()); // timestamp
+        exit('planning');
 
         if (eatAll('newline') > 1) {
-          return 'break'
+          return 'break';
         }
       },
     },
     {
       test: 'drawer.begin',
       action: (token, context) => {
-        return drawer(token, context)
+        return drawer(token, context);
       },
     },
     {
       test: /.*/,
       action: () => {
-        return 'break'
+        return 'break';
       },
     },
   ],
-}
+};
 
-export default planning
+export default planning;

@@ -24,9 +24,7 @@
     {
       "type": "block",
       "name": "SRC",
-      "params": [
-        "javascript"
-      ],
+      "params": ["javascript"],
       "value": "console.log('named code block')",
       "attributes": {
         "name": "code_block"
@@ -35,9 +33,7 @@
         {
           "type": "block.begin",
           "name": "SRC",
-          "params": [
-            "javascript"
-          ],
+          "params": ["javascript"],
           "position": {
             "start": {
               "line": 2,
@@ -147,18 +143,14 @@
     {
       "type": "block",
       "name": "SRC",
-      "params": [
-        "javascript"
-      ],
+      "params": ["javascript"],
       "value": "console.log('no name')",
       "attributes": {},
       "children": [
         {
           "type": "block.begin",
           "name": "SRC",
-          "params": [
-            "javascript"
-          ],
+          "params": ["javascript"],
           "position": {
             "start": {
               "line": 8,
@@ -253,18 +245,14 @@
     {
       "type": "block",
       "name": "SRC",
-      "params": [
-        "javascript"
-      ],
+      "params": ["javascript"],
       "value": "console.log('no name')",
       "attributes": {},
       "children": [
         {
           "type": "block.begin",
           "name": "SRC",
-          "params": [
-            "javascript"
-          ],
+          "params": ["javascript"],
           "position": {
             "start": {
               "line": 13,

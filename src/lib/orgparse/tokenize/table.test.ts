@@ -1,30 +1,31 @@
-import { describe, it } from 'node:test'
-import assert from 'node:assert'
-import tokenize from './__tests__/tok'
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
+import tokenize from './__tests__/tok';
 
 describe('tokenize table', () => {
   it('knows table hr', () => {
     assert.deepEqual(tokenize('|----+---+----|'), [
       { _text: '|----+---+----|', type: 'table.hr' },
-    ])
+    ]);
     assert.deepEqual(tokenize('|--=-+---+----|'), [
       { _text: '|--=-+---+----|', type: 'table.hr' },
-    ])
+    ]);
     assert.deepEqual(tokenize('  |----+---+----|'), [
       { _text: '|----+---+----|', type: 'table.hr' },
-    ])
+    ]);
     assert.deepEqual(tokenize('|----+---+----'), [
       { _text: '|----+---+----', type: 'table.hr' },
-    ])
-    assert.deepEqual(tokenize('|---'), [{ _text: '|---', type: 'table.hr' }])
-    assert.deepEqual(tokenize('|-'), [{ _text: '|-', type: 'table.hr' }])
-  })
+    ]);
+    assert.deepEqual(tokenize('|---'), [{ _text: '|---', type: 'table.hr' }]);
+    assert.deepEqual(tokenize('|-'), [{ _text: '|-', type: 'table.hr' }]);
+  });
 
   it('knows these are not table separators', () => {
     assert.deepEqual(tokenize('----+---+----|'), [
       { _text: '----+---+----|', type: 'text', value: '----+---+----|' },
-    ])
-  })
+    ]);
+  });
 
   it('knows table rows', () => {
     assert.deepEqual(tokenize('| batman | superman | wonder woman |'), [
@@ -59,7 +60,7 @@ describe('tokenize table', () => {
         _text: '|',
         type: 'table.columnSeparator',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize("| hello | world | y'all |"), [
       {
         _text: '|',
@@ -92,7 +93,7 @@ describe('tokenize table', () => {
         _text: '|',
         type: 'table.columnSeparator',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize("   | hello | world | y'all |"), [
       {
         _text: '|',
@@ -125,7 +126,7 @@ describe('tokenize table', () => {
         _text: '|',
         type: 'table.columnSeparator',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize("|    hello |  world   |y'all |"), [
       {
         _text: '|',
@@ -158,7 +159,7 @@ describe('tokenize table', () => {
         _text: '|',
         type: 'table.columnSeparator',
       },
-    ])
+    ]);
     // with empty cell
     assert.deepEqual(tokenize('||  world   | |'), [
       {
@@ -187,8 +188,8 @@ describe('tokenize table', () => {
         _text: '|',
         type: 'table.columnSeparator',
       },
-    ])
-  })
+    ]);
+  });
 
   it('knows these are not table rows', () => {
     assert.deepEqual(tokenize(" hello | world | y'all |"), [
@@ -197,7 +198,7 @@ describe('tokenize table', () => {
         type: 'text',
         value: " hello | world | y'all |",
       },
-    ])
+    ]);
     assert.deepEqual(tokenize('|+'), [
       {
         _text: '|',
@@ -208,6 +209,6 @@ describe('tokenize table', () => {
         type: 'text',
         value: '+',
       },
-    ])
-  })
-})
+    ]);
+  });
+});

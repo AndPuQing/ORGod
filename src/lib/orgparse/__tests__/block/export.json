@@ -36,18 +36,14 @@
     {
       "type": "block",
       "name": "EXPORT",
-      "params": [
-        "html"
-      ],
+      "params": ["html"],
       "value": "<p>world!</p>",
       "attributes": {},
       "children": [
         {
           "type": "block.begin",
           "name": "EXPORT",
-          "params": [
-            "html"
-          ],
+          "params": ["html"],
           "position": {
             "start": {
               "line": 3,

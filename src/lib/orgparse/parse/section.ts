@@ -1,8 +1,8 @@
-import { Action } from './index.js'
-import { Stars } from '../types.js'
-import drawer from './drawer.js'
-import headline from './headline.js'
-import planning from './planning.js'
+import { Stars } from '../types.js';
+import drawer from './drawer.js';
+import headline from './headline.js';
+import { Action } from './index.js';
+import planning from './planning.js';
 
 const section: Action = (token: Stars, context) => {
   const {
@@ -10,18 +10,18 @@ const section: Action = (token: Stars, context) => {
     exit,
     exitTo,
     options: { flat },
-  } = context
+  } = context;
 
   // stars break footnote
-  exit('footnote', false)
+  exit('footnote', false);
 
   if (!flat) {
-    const level = token.level
+    const level = token.level;
 
     if (level <= context.level) {
-      exitTo('section')
-      exit('section')
-      return
+      exitTo('section');
+      exit('section');
+      return;
     }
 
     enter({
@@ -29,10 +29,10 @@ const section: Action = (token: Stars, context) => {
       level: level,
       properties: {},
       children: [],
-    })
+    });
   }
 
-  let headlineProcessed = false
+  let headlineProcessed = false;
 
   return {
     name: 'section',
@@ -40,9 +40,9 @@ const section: Action = (token: Stars, context) => {
       {
         test: 'stars',
         action: (token: Stars, context) => {
-          if (headlineProcessed) return 'break'
-          headlineProcessed = true
-          return headline(token, context)
+          if (headlineProcessed) return 'break';
+          headlineProcessed = true;
+          return headline(token, context);
         },
       },
       {
@@ -54,7 +54,7 @@ const section: Action = (token: Stars, context) => {
         action: drawer,
       },
     ],
-  }
-}
+  };
+};
 
-export default section
+export default section;

@@ -1,10 +1,10 @@
-import { Action, Handler } from './index.js'
-import { BlockBegin, BlockEnd } from '../types.js'
+import { BlockBegin, BlockEnd } from '../types.js';
+import { Action, Handler } from './index.js';
 
 const block: Action = (begin: BlockBegin, ctx): Handler => {
-  ctx.save()
-  const contentStart = begin.position.end
-  const blockName = begin.name.toLowerCase()
+  ctx.save();
+  const contentStart = begin.position.end;
+  const blockName = begin.name.toLowerCase();
 
   const block = ctx.enter({
     type: 'block',
@@ -13,8 +13,8 @@ const block: Action = (begin: BlockBegin, ctx): Handler => {
     value: '',
     attributes: { ...ctx.attributes },
     children: [],
-  })
-  ctx.push(ctx.lexer.eat())
+  });
+  ctx.push(ctx.lexer.eat());
 
   /*
    * find the indentation of the block and apply it to
@@ -26,27 +26,27 @@ const block: Action = (begin: BlockBegin, ctx): Handler => {
    * are omitted.
    */
   const align = (content: string) => {
-    let indent = -1
+    let indent = -1;
     return content
       .trimEnd()
       .split('\n')
       .map((line) => {
-        const _indent = line.search(/\S/)
+        const _indent = line.search(/\S/);
         if (indent === -1) {
-          indent = _indent
+          indent = _indent;
         }
-        if (indent === -1) return ''
-        let result = line.substring(Math.min(_indent, indent))
+        if (indent === -1) return '';
+        let result = line.substring(Math.min(_indent, indent));
 
         // remove escaping char ,
         if (block.name.toLowerCase() === 'src' && block.params[0] === 'org') {
-          result = result.replace(/^(\s*),/, '$1')
+          result = result.replace(/^(\s*),/, '$1');
         }
-        return result
+        return result;
       })
       .join('\n')
-      .trim()
-  }
+      .trim();
+  };
 
   return {
     name: 'block',
@@ -54,35 +54,35 @@ const block: Action = (begin: BlockBegin, ctx): Handler => {
       {
         test: 'block.end',
         action: (token: BlockEnd, context) => {
-          const lexer = context.lexer
-          if (token.name.toLowerCase() !== blockName) return 'next'
+          const lexer = context.lexer;
+          if (token.name.toLowerCase() !== blockName) return 'next';
           block.value = align(
             lexer.substring({
               start: contentStart,
               end: token.position.start,
             })
-          )
-          context.push(lexer.eat())
-          context.exit('block')
-          return 'break'
+          );
+          context.push(lexer.eat());
+          context.exit('block');
+          return 'break';
         },
       },
       {
         test: ['stars', 'EOF'],
         action: (_, context) => {
-          context.restore()
+          context.restore();
           context.lexer.modify((t) => ({
             type: 'text',
             value: context.lexer.substring(t.position),
             position: t.position,
-          }))
-          return 'break'
+          }));
+          return 'break';
         },
       },
       { test: 'newline', action: (_, { discard }) => discard() },
       { test: /./, action: (_, { consume }) => consume() },
     ],
-  }
-}
+  };
+};
 
-export default block
+export default block;

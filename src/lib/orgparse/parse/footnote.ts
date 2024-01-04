@@ -1,14 +1,14 @@
-import { Action } from './index.js'
-import { FootnoteLabel } from '../types.js'
+import { FootnoteLabel } from '../types.js';
+import { Action } from './index.js';
 
 const Footnote: Action = (token: FootnoteLabel, { enter, exitTo, consume }) => {
-  exitTo('document')
+  exitTo('document');
   enter({
     type: 'footnote',
     label: token.label,
     children: [],
-  })
-  consume()
-}
+  });
+  consume();
+};
 
-export default Footnote
+export default Footnote;

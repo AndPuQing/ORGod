@@ -1,18 +1,18 @@
-import { Action, Handler } from '.'
-import { LatexBegin, LatexEnd } from '../types'
+import { Action, Handler } from '.';
+import { LatexBegin, LatexEnd } from '../types';
 
 const latex: Action = (begin: LatexBegin, context): Handler => {
-  context.save()
-  const contentStart = begin.position.start
-  const envName = begin.name.toLowerCase()
+  context.save();
+  const contentStart = begin.position.start;
+  const envName = begin.name.toLowerCase();
 
   const latexBlock = context.enter({
     type: 'latex',
     name: begin.name,
     value: '',
     children: [],
-  })
-  context.push(context.lexer.eat())
+  });
+  context.push(context.lexer.eat());
 
   /*
    * find the indentation of the block and apply it to
@@ -24,22 +24,22 @@ const latex: Action = (begin: LatexBegin, context): Handler => {
    * are omitted.
    */
   const align = (content: string) => {
-    let indent = -1
+    let indent = -1;
     return content
       .trimEnd()
       .split('\n')
       .map((line) => {
-        const _indent = line.search(/\S/)
+        const _indent = line.search(/\S/);
         if (indent === -1) {
-          indent = _indent
+          indent = _indent;
         }
-        if (indent === -1) return ''
-        const result = line.substring(Math.min(_indent, indent))
-        return result
+        if (indent === -1) return '';
+        const result = line.substring(Math.min(_indent, indent));
+        return result;
       })
       .join('\n')
-      .trim()
-  }
+      .trim();
+  };
 
   return {
     name: 'latex',
@@ -47,34 +47,34 @@ const latex: Action = (begin: LatexBegin, context): Handler => {
       {
         test: 'latex.end',
         action: (token: LatexEnd, context) => {
-          if (token.name.toLowerCase() !== envName) return 'next'
+          if (token.name.toLowerCase() !== envName) return 'next';
           latexBlock.value = align(
             context.lexer.substring({
               start: contentStart,
               end: token.position.end,
             })
-          )
-          context.push(context.lexer.eat())
-          context.lexer.eat('newline')
-          context.exit('latex')
-          return 'break'
+          );
+          context.push(context.lexer.eat());
+          context.lexer.eat('newline');
+          context.exit('latex');
+          return 'break';
         },
       },
       {
         test: ['stars', 'EOF'],
         action: (_, context) => {
-          context.restore()
+          context.restore();
           context.lexer.modify((t) => ({
             type: 'text',
             value: context.lexer.substring(t.position),
             position: t.position,
-          }))
-          return 'break'
+          }));
+          return 'break';
         },
       },
       { test: /./, action: (_, context) => context.push(context.lexer.eat()) },
     ],
-  }
-}
+  };
+};
 
-export default latex
+export default latex;

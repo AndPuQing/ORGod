@@ -1,17 +1,17 @@
-import { Action } from '.'
-import { DrawerBegin, Section } from '../types'
+import { Action } from '.';
+import { DrawerBegin, Section } from '../types';
 
 const drawer: Action = (begin: DrawerBegin, context) => {
-  context.save()
+  context.save();
   const drawer = context.enter({
     type: 'drawer',
     name: begin.name,
     value: '',
     children: [],
-  })
-  context.consume()
+  });
+  context.consume();
 
-  const contentStart = begin.position.end
+  const contentStart = begin.position.end;
 
   return {
     name: 'drawer',
@@ -19,40 +19,40 @@ const drawer: Action = (begin: DrawerBegin, context) => {
       {
         test: ['stars', 'EOF'],
         action: (_, context) => {
-          context.restore()
+          context.restore();
           context.lexer.modify((t) => ({
             type: 'text',
             value: context.lexer.substring(t.position),
             position: t.position,
-          }))
-          return 'break'
+          }));
+          return 'break';
         },
       },
       {
         test: 'drawer.end',
         action: (token, context) => {
-          context.consume()
+          context.consume();
           drawer.value = context.lexer.substring({
             start: contentStart,
             end: token.position.start,
-          })
+          });
 
-          context.exit('drawer')
-          context.lexer.eat('newline')
+          context.exit('drawer');
+          context.lexer.eat('newline');
 
           if (drawer.name.toLowerCase() === 'properties') {
-            const section = context.parent as Section
+            const section = context.parent as Section;
             section.properties = drawer.value
               .split('\n')
               .reduce((accu, current) => {
-                const m = current.match(/\s*:(.+?):\s*(.+)\s*$/)
+                const m = current.match(/\s*:(.+?):\s*(.+)\s*$/);
                 if (m) {
-                  return { ...accu, [m[1].toLowerCase()]: m[2] }
+                  return { ...accu, [m[1].toLowerCase()]: m[2] };
                 }
-                return accu
-              }, section.properties)
+                return accu;
+              }, section.properties);
           }
-          return 'break'
+          return 'break';
         },
       },
       {
@@ -60,7 +60,7 @@ const drawer: Action = (begin: DrawerBegin, context) => {
         action: (_, { consume }) => consume(),
       },
     ],
-  }
-}
+  };
+};
 
-export default drawer
+export default drawer;

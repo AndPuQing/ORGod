@@ -1,6 +1,7 @@
-import { describe, it } from 'node:test'
-import assert from 'node:assert'
-import tokenize from './__tests__/tok'
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
+import tokenize from './__tests__/tok';
 
 describe('tokenize footnote', () => {
   it('knows footnotes', () => {
@@ -15,7 +16,7 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: 'a footnote',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize('[fn:word] a footnote'), [
       {
         _text: '[fn:word]',
@@ -27,7 +28,7 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: 'a footnote',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize('[fn:word_] a footnote'), [
       {
         _text: '[fn:word_]',
@@ -39,7 +40,7 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: 'a footnote',
       },
-    ])
+    ]);
 
     assert.deepEqual(tokenize('[fn:wor1d_] a footnote'), [
       {
@@ -52,8 +53,8 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: 'a footnote',
       },
-    ])
-  })
+    ]);
+  });
 
   it('knows these are not footnotes', () => {
     assert.deepEqual(tokenize('[fn:1]: not a footnote'), [
@@ -77,7 +78,7 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: ': not a footnote',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize(' [fn:1] not a footnote with space prefix'), [
       {
         _text: ' ',
@@ -104,7 +105,7 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: ' not a footnote with space prefix',
       },
-    ])
+    ]);
 
     assert.deepEqual(tokenize('[[fn:1] not a footnote with extra ['), [
       {
@@ -132,7 +133,7 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: ' not a footnote with extra [',
       },
-    ])
+    ]);
     assert.deepEqual(tokenize('\t[fn:1] not a footnote with a tab prefix'), [
       {
         _text: '\t',
@@ -159,6 +160,6 @@ describe('tokenize footnote', () => {
         type: 'text',
         value: ' not a footnote with a tab prefix',
       },
-    ])
-  })
-})
+    ]);
+  });
+});

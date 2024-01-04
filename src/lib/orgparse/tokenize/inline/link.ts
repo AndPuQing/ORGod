@@ -1,40 +1,41 @@
-import { Reader } from 'text-kit'
-import { Tokenizer } from '../index.js'
-import { Token } from '../../types.js'
-import uri from '../../uri.js'
-import tokenizeText from './text.js'
-import { tokenize } from './index.js'
+import { Reader } from 'text-kit';
+
+import { Token } from '../../types.js';
+import uri from '../../uri.js';
+import { Tokenizer } from '../index.js';
+import { tokenize } from './index.js';
+import tokenizeText from './text.js';
 
 const tokenizeLink: Tokenizer = (reader: Reader) => {
-  const tokens: Token[] = []
-  const { eat, findClosing, jump, getChar, now } = reader
+  const tokens: Token[] = [];
+  const { eat, findClosing, jump, getChar, now } = reader;
   if (getChar() !== '[') {
-    return
+    return;
   }
-  const linkOpening = eat('char')
+  const linkOpening = eat('char');
   // if (!linkOpening) return
 
   tokens.push({
     type: 'opening',
     element: 'link',
     position: linkOpening.position,
-  })
+  });
 
-  const linkClosing = findClosing(linkOpening.position.start)
-  if (!linkClosing) return
+  const linkClosing = findClosing(linkOpening.position.start);
+  if (!linkClosing) return;
 
   if (getChar() !== '[') {
-    return
+    return;
   }
-  const pathOpening = eat('char')
-  const pathClosing = findClosing(pathOpening.position.start)
-  if (!pathClosing) return
+  const pathOpening = eat('char');
+  const pathClosing = findClosing(pathOpening.position.start);
+  if (!pathClosing) return;
 
-  const linkInfo = uri(reader.substring(pathOpening.position.end, pathClosing))
-  if (!linkInfo) return
+  const linkInfo = uri(reader.substring(pathOpening.position.end, pathClosing));
+  if (!linkInfo) return;
 
-  jump(pathClosing)
-  eat('char') // eat the ]
+  jump(pathClosing);
+  eat('char'); // eat the ]
 
   tokens.push({
     type: 'link.path',
@@ -43,27 +44,27 @@ const tokenizeLink: Tokenizer = (reader: Reader) => {
       start: pathOpening.position.start,
       end: now(),
     },
-  })
+  });
   if (getChar() === '[') {
-    const descClosing = findClosing()
+    const descClosing = findClosing();
     if (!descClosing) {
-      return
+      return;
     }
-    eat() // descOpening
+    eat(); // descOpening
     const desc = tokenize(reader.read({ end: descClosing }), [
       tokenizeText(now()),
-    ])
-    tokens.push(...desc)
+    ]);
+    tokens.push(...desc);
   }
 
-  jump(linkClosing)
+  jump(linkClosing);
   tokens.push({
     type: 'closing',
     element: 'link',
     position: eat().position,
-  })
+  });
 
-  return tokens
-}
+  return tokens;
+};
 
-export default tokenizeLink
+export default tokenizeLink;

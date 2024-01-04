@@ -1,10 +1,11 @@
-import { describe, it } from 'node:test'
-import assert from 'node:assert'
-import tokenize from './__tests__/tok'
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
+import tokenize from './__tests__/tok';
 
 const options = {
   timezone: 'Pacific/Auckland',
-}
+};
 
 describe('tokenize planning', () => {
   it('knows plannings', () => {
@@ -22,7 +23,7 @@ describe('tokenize planning', () => {
           end: undefined,
         },
       },
-    ])
+    ]);
     assert.deepEqual(tokenize('  DEADLINE: <2018-01-01 Mon>', options), [
       {
         _text: 'DEADLINE:',
@@ -37,7 +38,7 @@ describe('tokenize planning', () => {
           end: undefined,
         },
       },
-    ])
+    ]);
     assert.deepEqual(tokenize(' \tDEADLINE: <2018-01-01 Mon>', options), [
       {
         _text: 'DEADLINE:',
@@ -52,7 +53,7 @@ describe('tokenize planning', () => {
           end: undefined,
         },
       },
-    ])
+    ]);
     assert.deepEqual(tokenize(' \t DEADLINE: <2018-01-01 Mon>', options), [
       {
         _text: 'DEADLINE:',
@@ -67,8 +68,8 @@ describe('tokenize planning', () => {
           end: undefined,
         },
       },
-    ])
-  })
+    ]);
+  });
 
   it('know multiple plannings', () => {
     assert.deepEqual(
@@ -104,8 +105,8 @@ describe('tokenize planning', () => {
           },
         },
       ]
-    )
-  })
+    );
+  });
 
   it('knows these are not plannings', () => {
     assert.deepEqual(tokenize('dEADLINE: <2018-01-01 Mon>', options), [
@@ -114,6 +115,6 @@ describe('tokenize planning', () => {
         type: 'text',
         value: 'dEADLINE: <2018-01-01 Mon>',
       },
-    ])
-  })
-})
+    ]);
+  });
+});
