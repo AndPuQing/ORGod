@@ -1,36 +1,36 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
-import todoKeywordSet from './todo-keyword-set';
+import createTodoKeywordSet from './todo-keyword-set';
 
 const debug = (text: string) => {
-  const tks = todoKeywordSet(text);
+  const tks = createTodoKeywordSet(text);
   console.log(`${text}:`, tks);
 };
 
 describe('TodoKeywordSet', () => {
   it('works', () => {
-    assert.deepEqual(todoKeywordSet('TODO | DONE'), {
+    assert.deepEqual(createTodoKeywordSet('TODO | DONE'), {
       actionables: ['TODO'],
       done: ['DONE'],
       keywords: ['TODO', 'DONE'],
     });
-    assert.deepEqual(todoKeywordSet('TODO DONE'), {
+    assert.deepEqual(createTodoKeywordSet('TODO DONE'), {
       actionables: ['TODO'],
       done: ['DONE'],
       keywords: ['TODO', 'DONE'],
     });
-    assert.deepEqual(todoKeywordSet(' TODO NEXT  |  DONE '), {
+    assert.deepEqual(createTodoKeywordSet(' TODO NEXT  |  DONE '), {
       actionables: ['TODO', 'NEXT'],
       done: ['DONE'],
       keywords: ['TODO', 'NEXT', 'DONE'],
     });
-    assert.deepEqual(todoKeywordSet('TODO NEXT DONE'), {
+    assert.deepEqual(createTodoKeywordSet('TODO NEXT DONE'), {
       actionables: ['TODO', 'NEXT'],
       done: ['DONE'],
       keywords: ['TODO', 'NEXT', 'DONE'],
     });
-    assert.deepEqual(todoKeywordSet('TODO | DONE CANCELLED'), {
+    assert.deepEqual(createTodoKeywordSet('TODO | DONE CANCELLED'), {
       actionables: ['TODO'],
       done: ['DONE', 'CANCELLED'],
       keywords: ['TODO', 'DONE', 'CANCELLED'],

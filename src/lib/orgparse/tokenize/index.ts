@@ -1,7 +1,7 @@
 import { read, Reader } from 'text-kit';
 import { Point, Position } from 'unist';
 
-import todoKeywordSet, { TodoKeywordSet } from '../todo-keyword-set.js';
+import createTodoKeywordSet, { TodoKeywordSet } from '../todo-keyword-set.js';
 import { Token } from '../types.js';
 import block from './block.js';
 import comment from './comment.js';
@@ -44,7 +44,7 @@ export const tokenize = (text: string, options: LexerOptions): Lexer => {
   const { timezone, todos, range } = options;
   const reader = read(text, range);
   const { getChar } = reader;
-  const globalTodoKeywordSets = todos.map(todoKeywordSet);
+  const globalTodoKeywordSets = todos.map(createTodoKeywordSet);
   const inBufferTodoKeywordSets: TodoKeywordSet[] = [];
 
   function todoKeywordSets() {
@@ -161,7 +161,7 @@ export const tokenize = (text: string, options: LexerOptions): Lexer => {
     },
 
     addInBufferTodoKeywords(text) {
-      inBufferTodoKeywordSets.push(todoKeywordSet(text));
+      inBufferTodoKeywordSets.push(createTodoKeywordSet(text));
     },
     substring: (pos) => reader.substring(pos.start, pos.end),
     modify,

@@ -4,7 +4,7 @@ export interface TodoKeywordSet {
   readonly keywords: string[];
 }
 
-export default (text: string): TodoKeywordSet => {
+export function createTodoKeywordSet(text: string): TodoKeywordSet {
   const actionables = text
     .split(' ')
     .map((p) => p.trim())
@@ -16,7 +16,9 @@ export default (text: string): TodoKeywordSet => {
     actionables,
     done,
     get keywords(): string[] {
-      return actionables.concat(done);
+      return [...actionables, ...done];
     },
   };
-};
+}
+
+export default createTodoKeywordSet;

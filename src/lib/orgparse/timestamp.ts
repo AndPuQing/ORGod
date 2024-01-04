@@ -14,7 +14,6 @@ export const parse = (
     // opening
     const opening = eat(/[<[]/g);
     if (!opening) return;
-    const active = opening.value === '<';
 
     // date
     const { value: _date } = eat(/\d{4}-\d{2}-\d{2}/);
